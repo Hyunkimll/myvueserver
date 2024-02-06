@@ -27,12 +27,13 @@ function handleDisconnection() {
     conn = connection
 }
 // 统一执行sql的函数
-function exec(sql) {
+function exec(sql,params) {
     //连接数据库
     //每一次执行sql语句 重新连接数据库
     handleDisconnection()
+    console.log(params,sql)
     const promise = new Promise((resolve, reject) => {
-        conn.query(sql, (err, result) => {
+        conn.query(sql,params, (err, result) => {
             if (err) return reject(err)
             return resolve(result)
         })
