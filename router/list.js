@@ -20,15 +20,21 @@ user.get('/list', async (req, res) => {
     let params1 = [];
     const area_id = req.query.areaId || []
     //sql返回值
-    if(area_id.length){
+    if(area_id.length  &&  req.query.startTime && req.query.endTime){
+        params = [uid,uid,area_id,req.query.startTime,req.query.endTime, (pagenum - 1) * pageSizes,pageSizes]
+        params1 = [uid,uid,area_id,req.query.startTime,req.query.endTime]
+    }else if(area_id.length){
         params = [uid,uid,area_id, (pagenum - 1) * pageSizes,pageSizes]
         params1 = [uid,uid,area_id]
+    }else if(req.query.startTime && req.query.endTime){
+        params = [uid,uid,req.query.startTime,req.query.endTime, (pagenum - 1) * pageSizes,pageSizes]
+        params1 = [uid,uid,req.query.startTime,req.query.endTime]
     }else{
         params = [uid,uid, (pagenum - 1) * pageSizes,pageSizes]
         params1 = [uid,uid]
     }
-    const result = await List(params,area_id)
-    const total = await Page(params1,area_id)
+    const result = await List(params,area_id,req.query.startTime)
+    const total = await Page(params1,area_id,req.query.startTime)
     console.log(req.query)
     console.log(result)
     //返回给前端

@@ -1,7 +1,10 @@
 //引入处理post请求参数的组件
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 //引入接口为/user的路由
 const user = require('./router/list')
+const details = require('./router/details')
+const express = require('express')
+
 //引入服务js
 const app = require('./bin/www')
 //防止跨域
@@ -19,12 +22,18 @@ app.all('*', function (req, res, next) {
     }
 });
 //使用bodyParser对post请求参数进行处理
-app.use(bodyParser.urlencoded({
-    extended: false
-}))
-app.use(bodyParser.json())
+// app.use(bodyParser.urlencoded({
+//     extended: false
+// }))
+// app.use(bodyParser.json())
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 //使用user路由
 app.use('/data', user)
+app.use('/detail', details)
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
