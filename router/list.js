@@ -4,13 +4,15 @@ const express = require('express')
 const user = express.Router()
 //从../controller/user 引入sql方法
 const {
-    List,Page,check
+    List,Page,check, testTergister, loginByUsername
 } = require('../controller/list')
 //引入成功失败 返回方法
 const {
     success,
     fail
 } = require('../config/resModel')
+const { verify } = require("../sign");
+
 //写接口   /user/userList
 user.get('/list', async (req, res) => {
     const pagenum = parseInt(req.query.page_num)  //当前的num
@@ -53,5 +55,37 @@ user.get('/check', async (req, res) => {
     //返回给前端
     res.send(success('返回的数据', result))
 })
+
+// 测试注册
+user.get("/test-tergister", async (req, res) => {
+    const result = await testTergister(req);
+    if(result?.code === 500) {
+        return res.send(fail(result.reason));
+    } else {
+        return res.send(success("请求成功", result));
+    }
+});
+
+
+// 登录
+user.post("/login-by-username", async (req, res) => {
+    const result = await loginByUsername(req, req.body);
+    if(result?.code === 500) {
+        return res.send(fail(result.reason || ""));
+    } else {
+        return res.send(success("请求成功", result));
+    }
+});
+
+
+
+
+// verify 校验 token;
+user.get("/get-peofile", verify, async (req, res) => {
+    console.log("username: ", req.user);
+    return res.send(success("请求成功", true));
+});
+
+
 // 暴露
 module.exports = user

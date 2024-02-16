@@ -29,7 +29,7 @@ function fail(msg, data,page) {
         page = null
     }
     let value = {
-        code: 100,
+        code: 500,
         data,
         page,
         msg

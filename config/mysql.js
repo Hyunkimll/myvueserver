@@ -40,7 +40,14 @@ function exec(sql,params) {
     })
     return promise
 }
+
+async function getOne(sql, params) {
+    //连接数据库
+    //每一次执行sql语句 重新连接数据库
+    const result = await exec(sql, params);
+    return result[0] || null;
+}
 //暴露
 module.exports = {
-    exec
+    exec, getOne
 }
