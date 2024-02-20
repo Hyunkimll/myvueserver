@@ -4,7 +4,7 @@ const express = require('express')
 const user = express.Router()
 //从../controller/user 引入sql方法
 const {
-    List,Page,check, testTergister, loginByUsername
+    List,Page,check, testTergister, loginByUsername, sendCode, registration
 } = require('../controller/list')
 //引入成功失败 返回方法
 const {
@@ -70,6 +70,26 @@ user.get("/test-tergister", async (req, res) => {
 // 登录
 user.post("/login-by-username", async (req, res) => {
     const result = await loginByUsername(req, req.body);
+    if(result?.code === 500) {
+        return res.send(fail(result.reason || ""));
+    } else {
+        return res.send(success("请求成功", result));
+    }
+});
+
+// 邮箱发送验证码
+user.post("/email-send-code", async (req, res) => {
+    const result = await sendCode(req.body.email);
+    if(result?.code === 500) {
+        return res.send(fail(result.reason || ""));
+    } else {
+        return res.send(success("请求成功", result));
+    }
+});
+
+// 注册
+user.post("/sign-in", async (req, res) => {
+    const result = await registration(req.body, req);
     if(result?.code === 500) {
         return res.send(fail(result.reason || ""));
     } else {
