@@ -3,6 +3,7 @@
 //引入接口为/user的路由
 const user = require('./router/list')
 const details = require('./router/details')
+const screen = require('./router/screen')
 const express = require('express')
 
 //引入服务js
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: true }))
 //使用user路由
 app.use('/data', user)
 app.use('/detail', details)
+app.use('/screen', screen)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

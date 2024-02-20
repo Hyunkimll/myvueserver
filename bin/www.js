@@ -4,7 +4,7 @@ const express = require('express')
 // 实例化一个 express的对象
 const app = express()
 //监听3000端口
-var server = app.listen(30, function () {
+var server = app.listen(3000, function () {
     var host = server.address().address
     var port = server.address().port
     if (host == '::') {
