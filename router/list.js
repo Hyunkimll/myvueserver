@@ -88,7 +88,7 @@ user.post("/email-send-code", async (req, res) => {
 });
 
 // 注册
-user.post("/sign-in", async (req, res) => {
+user.post("/sign-up", async (req, res) => {
     const result = await registration(req.body, req);
     if(result?.code === 500) {
         return res.send(fail(result.reason || ""));

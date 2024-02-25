@@ -6,6 +6,7 @@ const dayjs = require("dayjs");
 const md5 = require("md5");
 const { getClientIp } = require("../utils");
 const { sign } = require("../sign");
+const { emailSendCode } = require("../email");
 
 
 const cacheOptions = {};
@@ -119,7 +120,7 @@ const loginByUsername = async (req, options) => {
 
         return {
             user: user.login_name,
-            tokens: sign({username: user.login_name, id: user.id})
+            token: sign({username: user.login_name, id: user.id})
         };
     } catch(e) {
         console.log("login failed: ", e.message);
@@ -135,13 +136,25 @@ const sendCode = async (email) => {
         if(!email) throw new Error("缺少参数email");
         if(!reg.test(email)) throw new Error("邮箱格式不正确");
 
+        const sql = `select * from user where email = ?`;
+        const user = await getOne(sql, [email]);
+        if(user) throw new Error("该邮箱已被使用，请更换");
+
         const key = getCacheKey(`email_${email}`, "register_code");
         const codeOptions = cacheOptions[key];
         const code = generateCode();
         const time = dayjs().unix();
         if(codeOptions && codeOptions.expire > time) throw new Error("一分钟之内不能重复获取验证码"); // 已经存在验证码并且已经过期
+        
+        // 发送邮件
+        const result = await emailSendCode({
+            to: email,
+            subject: "注册用户",
+            content: code
+        });
+
         cacheOptions[key] = { code: code, expire: time + 60, loseEfficacyTime: time + 60 * 5 };
-        return code;
+        return true;
     } catch(e) {
         console.log("send code failed: ", e.message);
         return {code: 500, reason: e.message};
