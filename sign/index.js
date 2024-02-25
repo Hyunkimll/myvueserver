@@ -11,6 +11,7 @@ const sign = (data = {}) => {
 // 验证 token
 const verify = (req, res, next) => {
     const authorization = req.headers.authorization || req.body.token || req.query.token || "";
+    console.log(authorization,'11');
     let token = authorization;
     if(authorization.indexOf("Bearer") > -1) token = authorization.replace("Bearer ", "");
 

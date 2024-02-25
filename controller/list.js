@@ -111,6 +111,7 @@ const loginByUsername = async (req, options) => {
         if(!pwd) throw new Error("缺少参数pwd");
 
         const user = await getOne(sql, params);
+        console.log(user,md5(md5(pwd)),options)
         if(!user) throw new Error("该用户不存在");
         if(md5(md5(pwd)) !== user.password) throw new Error("密码错误，请检查");
 
